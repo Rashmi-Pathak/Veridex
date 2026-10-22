@@ -1,0 +1,32 @@
+name: keepalive
+
+# Keep the live deploy warm for judges who click days later, and fail loudly if it is down.
+# Set the repo variables VERIDEX_API_URL (and optionally VERIDEX_SITE_URL) after deploying; until
+# then this job no-ops.
+on:
+  schedule:
+    # Offset minutes (not */10, not :00): GitHub deprioritizes contended schedules, which was
+    # stretching actual delivery to 65-80 min gaps. Odd offsets get materially better delivery.
+    - cron: "4,14,24,34,44,54 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ping API health and the site
+        env:
+          API_URL: ${{ vars.VERIDEX_API_URL }}
+          SITE_URL: ${{ vars.VERIDEX_SITE_URL }}
+        run: |
+          if [ -z "$API_URL" ]; then
+            echo "VERIDEX_API_URL not set; nothing to ping yet."
+            exit 0
+          fi
+          echo "Pinging $API_URL/health"
+          curl -fsS "$API_URL/health" > /dev/null && echo "api ok"
+          if [ -n "$SITE_URL" ]; then
+            echo "Pinging $SITE_URL"
+            curl -fsS -o /dev/null "$SITE_URL" && echo "site ok"
+          fi

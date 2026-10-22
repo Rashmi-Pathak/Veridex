@@ -1,0 +1,44 @@
+name: mobile-android
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "mobile/android/**"
+      - ".github/workflows/mobile-android.yml"
+  pull_request:
+    paths:
+      - "mobile/android/**"
+      - ".github/workflows/mobile-android.yml"
+
+jobs:
+  mobile-android:
+    name: mobile-android
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile/android
+    steps:
+      - uses: actions/checkout@v4
+
+      # AGP 8.13 needs JDK 17+; Temurin 21 is the pinned CI runtime. Local builds on newer
+      # JDKs (verified on 24) work too because nothing below hard-requires a specific version.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: "platforms;android-36 build-tools;36.0.0 platform-tools"
+
+      # Dependency caching plus automatic wrapper checksum validation.
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build and test
+        run: ./gradlew --no-daemon assembleDebug testDebugUnitTest
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-apk
+          path: mobile/android/app/build/outputs/apk/debug/app-debug.apk

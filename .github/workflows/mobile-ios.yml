@@ -1,0 +1,39 @@
+name: mobile-ios
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "mobile/ios/**"
+      - ".github/workflows/mobile-ios.yml"
+  pull_request:
+    paths:
+      - "mobile/ios/**"
+      - ".github/workflows/mobile-ios.yml"
+
+jobs:
+  mobile-ios:
+    name: mobile-ios
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate the Xcode project
+        working-directory: mobile/ios
+        run: xcodegen generate
+
+      - name: Build and test on the iPhone 16 simulator
+        working-directory: mobile/ios
+        run: |
+          xcodebuild -version
+          xcrun simctl list devices available | head -30
+          xcodebuild \
+            -project Rooted.xcodeproj \
+            -scheme Rooted \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            CODE_SIGNING_ALLOWED=NO \
+            build test
