@@ -1,8 +1,8 @@
 import type { NextConfig } from "next";
 
 // Proxy /api/* to the FastAPI backend so the browser talks to the SBR API same-origin (no CORS).
-// Locally this targets the dev API; in deployment set API_PROXY_TARGET to the backend URL.
-const API_PROXY_TARGET = process.env.API_PROXY_TARGET ?? "http://localhost:8000";
+const rawTarget = process.env.API_PROXY_TARGET ?? "http://localhost:8000";
+const API_PROXY_TARGET = rawTarget.replace(/\/+$/, "");
 
 // Content Security Policy for the whole app. Rooted is a provenance and trust tool, so the
 // load-bearing directive is frame-ancestors 'none': no third party may iframe or overlay our
@@ -23,7 +23,7 @@ const API_PROXY_TARGET = process.env.API_PROXY_TARGET ?? "http://localhost:8000"
 // endpoint (the file must not pass through the API), so exactly that host is allowed. worker-src
 // allows the blob worker c2pa-web may spawn; img-src allows data: and blob: for generated and
 // decoded images.
-const CONNECT_API_HOST = process.env.API_PROXY_TARGET || "http://localhost:8000";
+const CONNECT_API_HOST = API_PROXY_TARGET;
 const IOS_INSTALL_URL =
   process.env.IOS_TESTFLIGHT_URL ?? "https://github.com/placeholder-veridex/veridex/tree/main/mobile/ios";
 const ANDROID_INSTALL_URL =
