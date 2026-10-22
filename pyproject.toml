@@ -1,0 +1,91 @@
+[project]
+name = "veridex"
+version = "0.1.0"
+description = "Open, vendor-neutral C2PA Soft Binding Resolution server on Backblaze B2"
+requires-python = ">=3.11,<3.15"
+dependencies = []
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = ["api", "cli", "worker", "mcp", "packages/storage", "packages/provenance"]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.6",
+    "mypy>=1.10",
+    "pytest>=8",
+    "pytest-asyncio>=0.23",
+    "httpx>=0.27",
+    "pgserver>=0.1.4",
+    "schemathesis>=4.0",
+    "respx>=0.21",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["veridex_api", "veridex_cli", "veridex_storage", "veridex_provenance", "veridex_worker", "veridex_mcp"]
+
+[tool.ruff.lint.flake8-bugbear]
+# FastAPI idiom: File/Form/Depends/Query are evaluated as argument defaults by design.
+extend-immutable-calls = ["fastapi.File", "fastapi.Form", "fastapi.Depends", "fastapi.Query"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = [
+    "api/tests",
+    "cli/tests",
+    "worker/tests",
+    "mcp/tests",
+    "packages/storage/tests",
+    "packages/provenance/tests",
+]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+# infra/ holds standalone Modal deploy scripts (heavy framework decorators, the `modal` SDK is not
+# a repo dependency and runs only on Modal's builders). It is never imported by the app, so it is
+# out of scope for the app's type gate.
+exclude = ["^infra/"]
+
+# Third-party modules that ship no type stubs / py.typed marker, or that are optional extras not
+# installed in the default (CI) sync. Ignoring missing imports for ONLY these keeps strict checking
+# everywhere else. Our own workspace packages ship a py.typed marker, so they are never ignored here.
+[[tool.mypy.overrides]]
+module = [
+    "b2sdk.*",
+    "boto3",
+    "botocore.*",
+    "c2pa",
+    "pdqhash",
+    "pymerkle",
+    "trustmark",
+    "genblaze_core",
+    "genblaze_gmicloud",
+    "genblaze_openai",
+    "genblaze_assemblyai",
+    "imageio_ffmpeg",
+    "locust",
+]
+ignore_missing_imports = true
+
+# pgserver ships a py.typed marker but re-exports get_server without the explicit `as` form, so
+# strict's no_implicit_reexport hides it. Re-enable implicit re-export for this one dependency.
+[[tool.mypy.overrides]]
+module = "pgserver"
+implicit_reexport = true
+
+# The load smoke test subclasses locust's HttpUser and uses its @task decorator, both of which are
+# Any because locust is untyped. Relax only those two strict flags for this standalone script.
+[[tool.mypy.overrides]]
+module = "locustfile"
+disallow_subclassing_any = false
+disallow_untyped_decorators = false
