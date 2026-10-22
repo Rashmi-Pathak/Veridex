@@ -1,0 +1,30 @@
+[project]
+name = "veridex-provenance"
+version = "0.1.0"
+description = "Rooted trust core: PDQ, Ed25519/COSE, c2pa-python claims, Merkle log, TrustMark"
+requires-python = ">=3.11,<3.15"
+dependencies = [
+    "pydantic>=2.7",
+    "pillow>=10.0",
+    "numpy>=1.26",
+    "pdqhash>=0.2",
+    "cryptography>=42.0",
+    "cbor2>=5.6",
+    "pymerkle>=6.0",
+    "c2pa-python>=0.36",
+    # Bundles a static ffmpeg binary, so the audio fingerprint decodes audio on a lean deploy and in
+    # CI with no system ffmpeg to install. Light relative to the binary it would otherwise need.
+    "imageio-ffmpeg>=0.5",
+]
+
+[project.optional-dependencies]
+# TrustMark pulls torch (heavy). Kept optional so the workspace sync and CI stay fast; the
+# watermark module uses a Protocol with a fake for unit tests and the real impl behind this extra.
+watermark = ["trustmark>=0.9"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["veridex_provenance"]
