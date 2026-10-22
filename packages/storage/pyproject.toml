@@ -1,0 +1,22 @@
+[project]
+name = "veridex-storage"
+version = "0.1.0"
+description = "Backblaze B2 storage for Rooted: content-addressable layout + Object Lock"
+requires-python = ">=3.11,<3.15"
+dependencies = [
+    "b2sdk>=2.0",
+    "pydantic>=2.7",
+    "veridex-provenance",
+    "psycopg[binary]>=3.1",
+    "psycopg-pool>=3.2",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["veridex_storage"]
+
+[tool.uv.sources]
+veridex-provenance = { workspace = true }
