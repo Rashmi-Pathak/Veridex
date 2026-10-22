@@ -1,0 +1,38 @@
+[project]
+name = "veridex-sbr"
+version = "0.1.0"
+description = "Rooted SBR CLI: recover C2PA provenance for stripped media from the command line"
+readme = "README.md"
+requires-python = ">=3.11,<3.15"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [{ name = "Stephen Sookra" }]
+keywords = ["c2pa", "provenance", "watermark", "soft-binding", "sbr", "ai", "content-credentials"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Multimedia :: Graphics",
+    "Topic :: Security",
+]
+dependencies = [
+    "httpx>=0.27",
+    "typer>=0.12",
+]
+
+[project.urls]
+Homepage = "https://veridex-web-phi.vercel.app"
+Repository = "https://github.com/StephenSook/rooted"
+"Live API" = "https://veridex-api-ubvc.onrender.com"
+
+[project.scripts]
+rooted = "veridex_cli.main:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["veridex_cli"]
