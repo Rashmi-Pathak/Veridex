@@ -1,0 +1,739 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Veridex SBR API",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/services/supportedAlgorithms": {
+      "get": {
+        "summary": "Supported Algorithms",
+        "operationId": "supported_algorithms_services_supportedAlgorithms_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupportedAlgorithms"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ingest": {
+      "post": {
+        "summary": "Ingest",
+        "description": "Trusted generation-side ingest (authenticated in prod). Public surface is /matches/*.\n\nThe asset hash is computed from the uploaded bytes, never taken from the client, and an existing\nmanifest id is not overwritten.",
+        "operationId": "ingest_ingest_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_ingest_ingest_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object",
+                  "title": "Response Ingest Ingest Post"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "malformed request body"
+          },
+          "409": {
+            "description": "manifest id already exists"
+          },
+          "413": {
+            "description": "uploaded asset too large"
+          },
+          "415": {
+            "description": "invalid or unsupported image"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/matches/byContent": {
+      "post": {
+        "summary": "Matches By Content",
+        "operationId": "matches_by_content_matches_byContent_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_matches_by_content_matches_byContent_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SoftBindingQueryResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "malformed request body"
+          },
+          "413": {
+            "description": "uploaded asset too large"
+          },
+          "415": {
+            "description": "invalid or unsupported image"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/matches/byBinding": {
+      "get": {
+        "summary": "Matches By Binding",
+        "operationId": "matches_by_binding_matches_byBinding_get",
+        "parameters": [
+          {
+            "name": "alg",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Alg"
+            }
+          },
+          {
+            "name": "value",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Value"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SoftBindingQueryResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/manifests/{manifest_id}": {
+      "get": {
+        "summary": "Get Manifest",
+        "operationId": "get_manifest_manifests__manifest_id__get",
+        "parameters": [
+          {
+            "name": "manifest_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Manifest Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Manifest"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "manifest not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transparency/log": {
+      "get": {
+        "summary": "Transparency Log",
+        "description": "The append-ordered log leaves plus the current root. A transparency log is meant to be\nauditable, so the entries are public; this also feeds the Merkle explorer.",
+        "operationId": "transparency_log_transparency_log_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transparency/checkpoint": {
+      "get": {
+        "summary": "Transparency Checkpoint",
+        "description": "The current signed tree head. Idempotent: the epoch is the tree size, so re-reading an\nunchanged tree returns the same signed checkpoint. The public key travels with it.",
+        "operationId": "transparency_checkpoint_transparency_checkpoint_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckpointResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transparency/proof/{manifest_id}": {
+      "get": {
+        "summary": "Transparency Proof",
+        "description": "An inclusion proof for a manifest, pinned to a signed checkpoint so the client can bind the\nleaf to a signed tree head without trusting this endpoint.",
+        "operationId": "transparency_proof_transparency_proof__manifest_id__get",
+        "parameters": [
+          {
+            "name": "manifest_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Manifest Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InclusionProofResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "manifest not in transparency log"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health",
+        "description": "Liveness probe. Returns no provenance data, safe for an unauthenticated check.",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object",
+                  "title": "Response Health Health Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AlgorithmEntry": {
+        "properties": {
+          "alg": {
+            "type": "string",
+            "title": "Alg"
+          }
+        },
+        "type": "object",
+        "required": [
+          "alg"
+        ],
+        "title": "AlgorithmEntry",
+        "description": "One advertised soft-binding algorithm (the C2PA SBR softBindingAlgList entry shape)."
+      },
+      "Body_ingest_ingest_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File"
+          },
+          "manifest_id": {
+            "type": "string",
+            "title": "Manifest Id"
+          },
+          "watermark_id": {
+            "type": "string",
+            "title": "Watermark Id"
+          },
+          "model": {
+            "type": "string",
+            "title": "Model",
+            "default": "unknown"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file",
+          "manifest_id",
+          "watermark_id"
+        ],
+        "title": "Body_ingest_ingest_post"
+      },
+      "Body_matches_by_content_matches_byContent_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_matches_by_content_matches_byContent_post"
+      },
+      "CheckpointResponse": {
+        "properties": {
+          "checkpoint": {
+            "$ref": "#/components/schemas/MerkleCheckpoint"
+          },
+          "publicKeyHex": {
+            "type": "string",
+            "title": "Publickeyhex"
+          },
+          "keySource": {
+            "type": "string",
+            "title": "Keysource"
+          }
+        },
+        "type": "object",
+        "required": [
+          "checkpoint",
+          "publicKeyHex",
+          "keySource"
+        ],
+        "title": "CheckpointResponse",
+        "description": "A signed Merkle tree head plus the public key to verify it independently.\n\nkey_source is \"configured\" for a real loaded key or \"ephemeral\" for a dev/CI key, so a client\nnever mistakes a throwaway key for a trust anchor."
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "InclusionProofResponse": {
+        "properties": {
+          "manifestId": {
+            "type": "string",
+            "title": "Manifestid"
+          },
+          "leafIndex": {
+            "type": "integer",
+            "title": "Leafindex"
+          },
+          "leafHash": {
+            "type": "string",
+            "title": "Leafhash"
+          },
+          "treeSize": {
+            "type": "integer",
+            "title": "Treesize"
+          },
+          "rootHash": {
+            "type": "string",
+            "title": "Roothash"
+          },
+          "proof": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Proof"
+          },
+          "checkpoint": {
+            "$ref": "#/components/schemas/MerkleCheckpoint"
+          },
+          "publicKeyHex": {
+            "type": "string",
+            "title": "Publickeyhex"
+          },
+          "keySource": {
+            "type": "string",
+            "title": "Keysource"
+          },
+          "serverVerified": {
+            "type": "boolean",
+            "title": "Serververified"
+          }
+        },
+        "type": "object",
+        "required": [
+          "manifestId",
+          "leafIndex",
+          "leafHash",
+          "treeSize",
+          "rootHash",
+          "proof",
+          "checkpoint",
+          "publicKeyHex",
+          "keySource",
+          "serverVerified"
+        ],
+        "title": "InclusionProofResponse",
+        "description": "A self-contained, independently-verifiable inclusion proof.\n\nThe client resolves the serialized proof to a root and confirms that root equals the embedded\nsigned checkpoint's root_hash, then verifies the checkpoint signature against public_key_hex.\nserver_verified is only the server's own check and is not a substitute for that client-side\nverification. leaf_hash is the manifest's canonical hash (the leaf), unchanged by redaction."
+      },
+      "LogEntry": {
+        "properties": {
+          "leafIndex": {
+            "type": "integer",
+            "title": "Leafindex"
+          },
+          "manifestId": {
+            "type": "string",
+            "title": "Manifestid"
+          },
+          "leafHash": {
+            "type": "string",
+            "title": "Leafhash"
+          }
+        },
+        "type": "object",
+        "required": [
+          "leafIndex",
+          "manifestId",
+          "leafHash"
+        ],
+        "title": "LogEntry",
+        "description": "One append-ordered transparency-log leaf."
+      },
+      "LogResponse": {
+        "properties": {
+          "entries": {
+            "items": {
+              "$ref": "#/components/schemas/LogEntry"
+            },
+            "type": "array",
+            "title": "Entries"
+          },
+          "treeSize": {
+            "type": "integer",
+            "title": "Treesize"
+          },
+          "rootHash": {
+            "type": "string",
+            "title": "Roothash"
+          }
+        },
+        "type": "object",
+        "required": [
+          "entries",
+          "treeSize",
+          "rootHash"
+        ],
+        "title": "LogResponse",
+        "description": "The ordered transparency-log leaves with the current tree head, for auditing and display."
+      },
+      "Manifest": {
+        "properties": {
+          "manifestId": {
+            "type": "string",
+            "title": "Manifestid"
+          },
+          "assetSha256": {
+            "type": "string",
+            "title": "Assetsha256"
+          },
+          "createdAt": {
+            "type": "string",
+            "title": "Createdat"
+          },
+          "systemProvenance": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Systemprovenance"
+          },
+          "personalProvenance": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Personalprovenance"
+          },
+          "softBindings": {
+            "items": {
+              "$ref": "#/components/schemas/SoftBinding"
+            },
+            "type": "array",
+            "title": "Softbindings"
+          }
+        },
+        "type": "object",
+        "required": [
+          "manifestId",
+          "assetSha256",
+          "createdAt"
+        ],
+        "title": "Manifest",
+        "description": "The provenance record Rooted stores and recovers.\n\nsystem_provenance is disclosed on recovery (model, provider, timestamp). personal_provenance\n(prompt, user, IP) is withheld by the SB 942-style redaction layer. soft_bindings carry the\nwatermark ID and the PDQ fingerprint used to recover this manifest when the asset is stripped."
+      },
+      "Match": {
+        "properties": {
+          "manifestId": {
+            "type": "string",
+            "title": "Manifestid"
+          },
+          "similarityScore": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Similarityscore"
+          },
+          "endpoint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Endpoint"
+          }
+        },
+        "type": "object",
+        "required": [
+          "manifestId"
+        ],
+        "title": "Match",
+        "description": "One SBR query result: a manifest the queried asset binds to."
+      },
+      "MerkleCheckpoint": {
+        "properties": {
+          "epoch": {
+            "type": "integer",
+            "title": "Epoch"
+          },
+          "treeSize": {
+            "type": "integer",
+            "title": "Treesize"
+          },
+          "rootHash": {
+            "type": "string",
+            "title": "Roothash"
+          },
+          "signedAt": {
+            "type": "string",
+            "title": "Signedat"
+          },
+          "signatureB64": {
+            "type": "string",
+            "title": "Signatureb64"
+          }
+        },
+        "type": "object",
+        "required": [
+          "epoch",
+          "treeSize",
+          "rootHash",
+          "signedAt",
+          "signatureB64"
+        ],
+        "title": "MerkleCheckpoint",
+        "description": "A signed tree head, written to B2 under Object Lock for tamper-evidence."
+      },
+      "SoftBinding": {
+        "properties": {
+          "alg": {
+            "type": "string",
+            "title": "Alg"
+          },
+          "value": {
+            "type": "string",
+            "title": "Value"
+          },
+          "scope": {
+            "type": "string",
+            "title": "Scope",
+            "default": "all"
+          }
+        },
+        "type": "object",
+        "required": [
+          "alg",
+          "value"
+        ],
+        "title": "SoftBinding",
+        "description": "A recoverable pointer from an asset to its manifest (a watermark ID or a fingerprint)."
+      },
+      "SoftBindingQueryResult": {
+        "properties": {
+          "matches": {
+            "items": {
+              "$ref": "#/components/schemas/Match"
+            },
+            "type": "array",
+            "title": "Matches"
+          }
+        },
+        "type": "object",
+        "title": "SoftBindingQueryResult"
+      },
+      "SupportedAlgorithms": {
+        "properties": {
+          "watermarks": {
+            "items": {
+              "$ref": "#/components/schemas/AlgorithmEntry"
+            },
+            "type": "array",
+            "title": "Watermarks"
+          },
+          "fingerprints": {
+            "items": {
+              "$ref": "#/components/schemas/AlgorithmEntry"
+            },
+            "type": "array",
+            "title": "Fingerprints"
+          }
+        },
+        "type": "object",
+        "title": "SupportedAlgorithms",
+        "description": "Advertised at /services/supportedAlgorithms. PDQ is deliberately absent (internal only).\n\nThe C2PA SBR spec shape is arrays of objects with an `alg` field, not bare strings."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
