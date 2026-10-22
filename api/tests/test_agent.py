@@ -179,7 +179,7 @@ def test_agent_falls_back_on_model_error(
 
     api_err = anthropic.APIConnectionError(
         message="down",
-        request=httpx.Request("POST", "http://x"),  # type: ignore[arg-type]
+        request=httpx.Request("POST", "http://x"),
     )
     _install_fake(monkeypatch, [api_err])
     body = _ask(client, "anything")
