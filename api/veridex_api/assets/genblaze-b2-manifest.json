@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.5",
+  "run": {
+    "run_id": "aa1c1514-1ce7-4f40-b739-27344475a8ce",
+    "tenant_id": null,
+    "project_id": null,
+    "name": "rooted-genblaze-b2",
+    "status": "completed",
+    "steps": [
+      {
+        "step_id": "d209c7ca-aed8-4c21-832a-d4520469165b",
+        "run_id": "aa1c1514-1ce7-4f40-b739-27344475a8ce",
+        "provider": "gmicloud-image",
+        "model": "seedream-5.0-lite",
+        "step_type": "generate",
+        "model_version": null,
+        "model_hash": null,
+        "modality": "image",
+        "prompt": "a single rooted oak tree on a floating island in a deep blue starfield, cinematic, photorealistic",
+        "negative_prompt": null,
+        "prompt_visibility": "public",
+        "seed": null,
+        "params": {},
+        "status": "succeeded",
+        "inputs": [],
+        "assets": [
+          {
+            "asset_id": "a58c42b0-06dc-4d99-a099-2b1405eb16d1",
+            "url": "https://s3.us-east-005.backblazeb2.com/rooted-dev/genblaze/assets/e8/73/e873502180536dcd7d3f71d73545a710caf08626fa6e96652d0d41a925299bfb.jpg",
+            "media_type": "image/jpeg",
+            "sha256": "e873502180536dcd7d3f71d73545a710caf08626fa6e96652d0d41a925299bfb",
+            "size_bytes": 907976,
+            "width": null,
+            "height": null,
+            "duration": null,
+            "video": null,
+            "audio": null,
+            "tracks": null,
+            "metadata": {}
+          }
+        ],
+        "provider_payload": {
+          "gmicloud": {
+            "request_id": "803bfeef-4a28-4028-837a-04c7f501d58d",
+            "status": "success"
+          }
+        },
+        "retries": 0,
+        "cost_usd": null,
+        "error": null,
+        "error_code": null,
+        "started_at": "2026-06-29T05:11:45.102547Z",
+        "completed_at": "2026-06-29T05:12:39.625261Z",
+        "step_index": 0,
+        "metadata": {
+          "upstream_id": "803bfeef-4a28-4028-837a-04c7f501d58d"
+        }
+      }
+    ],
+    "parent_run_id": null,
+    "idempotency_key": null,
+    "created_at": "2026-06-29T05:12:39.625852Z",
+    "started_at": "2026-06-29T05:11:43.367483Z",
+    "completed_at": "2026-06-29T05:12:39.625880Z",
+    "metadata": {}
+  },
+  "canonical_hash": "a71e7c34808cc4064476e66d0f03a88c09cd388a9a114b24ab488def8cb19d94",
+  "manifest_uri": "https://s3.us-east-005.backblazeb2.com/rooted-dev/genblaze/manifests/aa1c1514-1ce7-4f40-b739-27344475a8ce.json",
+  "encryption_scheme": null,
+  "signature": null,
+  "transfer_failures": []
+}

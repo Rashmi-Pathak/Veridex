@@ -1,0 +1,363 @@
+{
+  "schema_version": "1.5",
+  "run": {
+    "run_id": "dfd1013f-1098-4f0c-a357-380947ab916e",
+    "tenant_id": null,
+    "project_id": null,
+    "name": "rooted-genblaze-transcript",
+    "status": "completed",
+    "steps": [
+      {
+        "step_id": "5182e076-995d-46a0-b0c0-c93433b6349e",
+        "run_id": "dfd1013f-1098-4f0c-a357-380947ab916e",
+        "provider": "assemblyai",
+        "model": "universal-3-pro",
+        "step_type": "generate",
+        "model_version": null,
+        "model_hash": null,
+        "modality": "text",
+        "prompt": "https://rooted-api-ubvc.onrender.com/demo/speech",
+        "negative_prompt": null,
+        "prompt_visibility": "public",
+        "seed": null,
+        "params": {},
+        "status": "succeeded",
+        "inputs": [],
+        "assets": [
+          {
+            "asset_id": "0ac1e469-7552-4caf-826e-2f354e2b5ee6",
+            "url": "text:a699e1329ddb5488b49732894c86ee0aa182f4b24cad3291f596af6cf8101db6",
+            "media_type": "text/plain",
+            "sha256": "a699e1329ddb5488b49732894c86ee0aa182f4b24cad3291f596af6cf8101db6",
+            "size_bytes": 289,
+            "width": null,
+            "height": null,
+            "duration": null,
+            "video": null,
+            "audio": {
+              "sample_rate": null,
+              "channels": null,
+              "codec": null,
+              "bitrate": null,
+              "word_timings": [
+                {
+                  "word": "Every",
+                  "start": 0.096,
+                  "end": 0.322,
+                  "confidence": 0.45366448
+                },
+                {
+                  "word": "image,",
+                  "start": 0.418,
+                  "end": 0.724,
+                  "confidence": 0.9961965
+                },
+                {
+                  "word": "video,",
+                  "start": 0.998,
+                  "end": 1.368,
+                  "confidence": 0.83499455
+                },
+                {
+                  "word": "and",
+                  "start": 1.481,
+                  "end": 1.626,
+                  "confidence": 0.9987919
+                },
+                {
+                  "word": "audio",
+                  "start": 1.626,
+                  "end": 1.964,
+                  "confidence": 0.9971745
+                },
+                {
+                  "word": "clip",
+                  "start": 1.964,
+                  "end": 2.302,
+                  "confidence": 0.9998915
+                },
+                {
+                  "word": "an",
+                  "start": 2.431,
+                  "end": 2.479,
+                  "confidence": 0.99503773
+                },
+                {
+                  "word": "AI",
+                  "start": 2.592,
+                  "end": 2.785,
+                  "confidence": 0.94809127
+                },
+                {
+                  "word": "model",
+                  "start": 2.785,
+                  "end": 3.107,
+                  "confidence": 0.99717253
+                },
+                {
+                  "word": "generates",
+                  "start": 3.107,
+                  "end": 3.655,
+                  "confidence": 0.9998324
+                },
+                {
+                  "word": "carries",
+                  "start": 3.655,
+                  "end": 3.961,
+                  "confidence": 0.9995278
+                },
+                {
+                  "word": "a",
+                  "start": 3.961,
+                  "end": 3.993,
+                  "confidence": 0.9998186
+                },
+                {
+                  "word": "record",
+                  "start": 4.041,
+                  "end": 4.363,
+                  "confidence": 0.99996364
+                },
+                {
+                  "word": "of",
+                  "start": 4.363,
+                  "end": 4.428,
+                  "confidence": 0.9999074
+                },
+                {
+                  "word": "how",
+                  "start": 4.444,
+                  "end": 4.557,
+                  "confidence": 0.9998796
+                },
+                {
+                  "word": "it",
+                  "start": 4.605,
+                  "end": 4.685,
+                  "confidence": 0.9998628
+                },
+                {
+                  "word": "was",
+                  "start": 4.685,
+                  "end": 4.83,
+                  "confidence": 0.99993503
+                },
+                {
+                  "word": "made.",
+                  "start": 4.846,
+                  "end": 5.12,
+                  "confidence": 0.99907047
+                },
+                {
+                  "word": "When",
+                  "start": 5.813,
+                  "end": 5.909,
+                  "confidence": 0.9991067
+                },
+                {
+                  "word": "that",
+                  "start": 5.909,
+                  "end": 6.103,
+                  "confidence": 0.9995596
+                },
+                {
+                  "word": "record",
+                  "start": 6.135,
+                  "end": 6.489,
+                  "confidence": 0.99996305
+                },
+                {
+                  "word": "is",
+                  "start": 6.489,
+                  "end": 6.569,
+                  "confidence": 0.9998776
+                },
+                {
+                  "word": "stripped",
+                  "start": 6.569,
+                  "end": 6.892,
+                  "confidence": 0.9999331
+                },
+                {
+                  "word": "away,",
+                  "start": 6.892,
+                  "end": 7.23,
+                  "confidence": 0.9968786
+                },
+                {
+                  "word": "the",
+                  "start": 7.664,
+                  "end": 7.826,
+                  "confidence": 0.9995377
+                },
+                {
+                  "word": "origin",
+                  "start": 7.906,
+                  "end": 8.212,
+                  "confidence": 0.99849284
+                },
+                {
+                  "word": "can",
+                  "start": 8.325,
+                  "end": 8.486,
+                  "confidence": 0.9997806
+                },
+                {
+                  "word": "still",
+                  "start": 8.486,
+                  "end": 8.776,
+                  "confidence": 0.9999052
+                },
+                {
+                  "word": "be",
+                  "start": 8.888,
+                  "end": 9.033,
+                  "confidence": 0.99990225
+                },
+                {
+                  "word": "recovered",
+                  "start": 9.033,
+                  "end": 9.532,
+                  "confidence": 0.99958235
+                },
+                {
+                  "word": "from",
+                  "start": 9.532,
+                  "end": 9.71,
+                  "confidence": 0.9992306
+                },
+                {
+                  "word": "an",
+                  "start": 9.758,
+                  "end": 9.806,
+                  "confidence": 0.9993469
+                },
+                {
+                  "word": "invisible",
+                  "start": 9.854,
+                  "end": 10.338,
+                  "confidence": 0.9986883
+                },
+                {
+                  "word": "watermark",
+                  "start": 10.418,
+                  "end": 11.062,
+                  "confidence": 0.99937636
+                },
+                {
+                  "word": "or",
+                  "start": 11.304,
+                  "end": 11.352,
+                  "confidence": 0.97874737
+                },
+                {
+                  "word": "a",
+                  "start": 11.449,
+                  "end": 11.529,
+                  "confidence": 0.9880828
+                },
+                {
+                  "word": "perceptual",
+                  "start": 11.529,
+                  "end": 12.077,
+                  "confidence": 0.99939966
+                },
+                {
+                  "word": "fingerprint.",
+                  "start": 12.109,
+                  "end": 12.608,
+                  "confidence": 0.93228173
+                },
+                {
+                  "word": "Recovered,",
+                  "start": 13.22,
+                  "end": 13.767,
+                  "confidence": 0.97133094
+                },
+                {
+                  "word": "signed,",
+                  "start": 13.88,
+                  "end": 14.428,
+                  "confidence": 0.9760246
+                },
+                {
+                  "word": "and",
+                  "start": 14.508,
+                  "end": 14.573,
+                  "confidence": 0.99952614
+                },
+                {
+                  "word": "logged.",
+                  "start": 14.669,
+                  "end": 14.943,
+                  "confidence": 0.895943
+                },
+                {
+                  "word": "That",
+                  "start": 15.555,
+                  "end": 15.668,
+                  "confidence": 0.9950054
+                },
+                {
+                  "word": "is",
+                  "start": 15.668,
+                  "end": 15.78,
+                  "confidence": 0.99892336
+                },
+                {
+                  "word": "verifiable",
+                  "start": 15.813,
+                  "end": 16.441,
+                  "confidence": 0.7139844
+                },
+                {
+                  "word": "content",
+                  "start": 16.441,
+                  "end": 16.859,
+                  "confidence": 0.9990252
+                },
+                {
+                  "word": "provenance.",
+                  "start": 16.859,
+                  "end": 17.342,
+                  "confidence": 0.96763664
+                }
+              ]
+            },
+            "tracks": null,
+            "metadata": {
+              "text": "Every image, video, and audio clip an AI model generates carries a record of how it was made. When that record is stripped away, the origin can still be recovered from an invisible watermark or a perceptual fingerprint. Recovered, signed, and logged. That is verifiable content provenance.",
+              "language": "en",
+              "confidence": 0.97072095,
+              "audio_duration": 18
+            }
+          }
+        ],
+        "provider_payload": {
+          "audio_duration": 18
+        },
+        "retries": 0,
+        "cost_usd": null,
+        "error": null,
+        "error_code": null,
+        "started_at": "2026-06-29T18:11:49.292325Z",
+        "completed_at": "2026-06-29T18:11:53.085785Z",
+        "step_index": 0,
+        "metadata": {
+          "upstream_id": "86f638ce-2007-412b-b5ef-d23733a9eca5"
+        }
+      }
+    ],
+    "parent_run_id": null,
+    "idempotency_key": null,
+    "created_at": "2026-06-29T18:11:53.086018Z",
+    "started_at": "2026-06-29T18:11:49.287305Z",
+    "completed_at": "2026-06-29T18:11:53.086100Z",
+    "metadata": {}
+  },
+  "canonical_hash": "226d28ba49d12af64ea744794b99c28c210f28a4ab6a532fa5c7df914e42da3b",
+  "manifest_uri": null,
+  "encryption_scheme": null,
+  "signature": null,
+  "transfer_failures": []
+}

@@ -1,0 +1,1 @@
+Every image, video, and audio clip an AI model generates carries a record of how it was made. When that record is stripped away, the origin can still be recovered from an invisible watermark or a perceptual fingerprint. Recovered, signed, and logged. That is verifiable content provenance.
