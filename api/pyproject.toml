@@ -1,0 +1,40 @@
+[project]
+name = "veridex-api"
+version = "0.1.0"
+description = "Rooted SBR API (C2PA v2.4 Soft Binding Resolution)"
+requires-python = ">=3.11,<3.15"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "python-multipart>=0.0.9",
+    "veridex-provenance",
+    "veridex-storage",
+    # veridex-worker with the genblaze extra: the Genblaze provider SDKs are light (no torch), so they
+    # ship in the base install. This keeps the deploy self-consistent (the standard build command
+    # installs everything live generation needs) with no separate extra or blueprint sync to forget.
+    "veridex-worker[genblaze]",
+    # veridex-mcp (the curated provenance MCP server) is mounted in-process at /mcp on this app, so the
+    # MCP product surface is reachable on the same deploy with no separate service. It is light
+    # (fastmcp + httpx, no native build), so it ships in the base install.
+    "veridex-mcp",
+    # The Anthropic SDK powers the live provenance agent (/demo/agent), which is opt-in via
+    # ANTHROPIC_API_KEY and serves an honest disabled response until a key is set.
+    "anthropic>=0.40",
+    # boto3 presigns the direct-to-B2 browser PUT (veridex_api.byo) against the B2 S3-compatible
+    # endpoint. It was already in the environment transitively (genblaze-s3); declared here because
+    # this package imports it directly.
+    "boto3>=1.43,<2",
+]
+
+[tool.uv.sources]
+veridex-provenance = { workspace = true }
+veridex-storage = { workspace = true }
+veridex-worker = { workspace = true }
+veridex-mcp = { workspace = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["veridex_api"]
