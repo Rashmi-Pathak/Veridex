@@ -14,7 +14,7 @@ services:
     branch: main
     autoDeploy: true
     healthCheckPath: /health
-    buildCommand: pip install uv && uv sync --locked --package veridex-api --no-dev
+    buildCommand: pip install uv && uv sync --package veridex-api --no-dev
     startCommand: .venv/bin/uvicorn veridex_api.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: VERIDEX_DEMO_SEED
@@ -77,6 +77,8 @@ services:
       # ANTHROPIC_API_KEY (sync:false) is set in the dashboard; until then it serves an honest
       # disabled response that still points at the reachable /mcp endpoint. Cost: claude-opus-4-8 at
       # capped tokens; the global cap counts every run, so 50/day is a hard daily ceiling.
+      - key: GEMINI_API_KEY
+        sync: false
       - key: ANTHROPIC_API_KEY
         sync: false
       - key: VERIDEX_AGENT_MODEL
