@@ -1,0 +1,21 @@
+# Local full-stack dev dependencies. Bring up with: docker compose up
+# (start Docker Desktop first). Postgres carries pgvector for the PDQ Hamming search.
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: veridex
+      POSTGRES_PASSWORD: veridex
+      POSTGRES_DB: veridex
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U veridex"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
