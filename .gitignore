@@ -1,0 +1,84 @@
+# --- Secrets (NEVER commit) ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+# Public C2PA conformance TEST trust anchors (no private key; the certs are marked FOR TESTING_ONLY).
+# Whitelisted past the blanket *.pem rule so the trusted-path demo can ship them.
+!packages/provenance/veridex_provenance/conformance/anchors.pem
+!web/public/c2pa-trust/anchors.pem
+id_rsa
+service-account*.json
+.npmrc
+.pypirc
+
+# --- Local working material (strategy, private framework, third-party content) ---
+# research/ holds strategy PDFs, the private methodology, the nk.studio crawl, and the idea
+# writeup. None of it belongs in a public repo (internal-process + third-party content rules).
+research/
+# Saved third-party site resources (nk.studio webpack/GTM/Vimeo dumps) kept locally as UI
+# reference only; ~70MB of someone else's minified JS that must never enter the repo.
+ui update*
+
+# --- Claude Code local ---
+.claude/settings.local.json
+.claude/worktrees/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.coverage
+htmlcov/
+.python-version
+
+# --- Node / Next.js / Turborepo ---
+node_modules/
+.next/
+out/
+dist/
+build/
+.turbo/
+*.tsbuildinfo
+.vercel/
+
+# --- Playwright MCP scratch output (screenshots, snapshots, console logs) ---
+.playwright-mcp/
+
+# --- Local demo/beat screenshots (kept local for the submission gallery, never committed) ---
+/beat-*.png
+
+# --- Model weights / large binaries (use external hosting, not git) ---
+*.pt
+*.pth
+*.onnx
+*.safetensors
+trustmark_weights/
+
+# --- OS / IDE ---
+.DS_Store
+.AppleDouble
+._*
+.vscode/
+.idea/
+*.swp
+
+# --- Logs / temp ---
+*.log
+tmp/
+.cache/
+
+# --- Secrets (defense-in-depth: the whole dir, not just *.key) ---
+secrets/
+
+# DO commit lockfiles: uv.lock, pnpm-lock.yaml are tracked on purpose.
+
+# --- Private working documents dropped in the repo root (pitch guides, prompt kits) ---
+/*.pdf

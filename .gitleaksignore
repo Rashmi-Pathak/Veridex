@@ -1,0 +1,9 @@
+# Verified false positives (pre-judging full-history rescan, 2026-07-02).
+# api/tests/test_b2_events.py: sequential-hex HMAC test fixture, not a credential.
+db795c02dbc23b8d2541b12c0955c25e4b3d1ae9:api/tests/test_b2_events.py:generic-api-key:26
+fe3d8379f812bb215eb6803c7e02c44e4f6fdf8f:api/tests/test_b2_events.py:generic-api-key:26
+# render.yaml: env var NAME declaration with sync:false, no value present.
+d9f4f4df6ad727ee62c6584c1cb0ef85d16054a7:render.yaml:generic-api-key:37
+18846573c3c5a1769a67b6f6da4add036b60e604:render.yaml:generic-api-key:37
+# worker/tests/test_pipeline.py: path string to a gitignored fixture key never committed.
+7e9a73ac13608cb325d09739ce8d145df37332b1:worker/tests/test_pipeline.py:generic-api-key:60
