@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Emerald shield with a check mark, drawn as a plain vector so no raster assets are needed. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#34D399"
+        android:pathData="M54,28 C46,32 39,34 32,35 C32,50 34,66 54,80 C74,66 76,50 76,35 C69,34 62,32 54,28 Z" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#060A09"
+        android:strokeWidth="6"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M44,53 L51,60 L64,45" />
+</vector>

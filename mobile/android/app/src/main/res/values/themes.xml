@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Window level theme only; the real theming is the Compose MaterialTheme. -->
+    <style name="Theme.RootedVerify" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/rooted_background</item>
+    </style>
+</resources>

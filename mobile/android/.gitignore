@@ -1,0 +1,10 @@
+# Local SDK location, machine specific, never committed.
+local.properties
+
+.gradle/
+build/
+.kotlin/
+.idea/
+*.iml
+captures/
+.DS_Store
