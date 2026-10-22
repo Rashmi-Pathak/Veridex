@@ -1,0 +1,8 @@
+{
+  "note": "Staged attack-demonstration fixture: a forged embedded-manifest summary claiming a human camera capture for an asset the registry proves was AI-generated. Never presented as live data; every API response built from this file carries staged: true. assetSha256 is the SHA-256 of a fixture marker string, deliberately not the demo asset bytes.",
+  "claimGenerator": "example-photo-firmware/2.1 (staged fixture)",
+  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/digitalCapture",
+  "model": "example-dslr-x100",
+  "provider": "example-camera-vendor",
+  "assetSha256": "05f239c1eb61a3a3885b783d16496b7687e92d5dd8c1ebb0b8b7aa03a1084389"
+}
