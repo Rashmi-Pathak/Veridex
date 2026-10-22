@@ -126,7 +126,8 @@ _GEMINI_TOOLS = [
                 "name": "verify_demo_asset",
                 "description": (
                     "Recover the bundled demo asset through Veridex's perceptual content matching. "
-                    "Returns whether provenance was recovered, similarity score, and system provenance."
+                    "Returns whether provenance was recovered, similarity score, and system "
+                    "provenance."
                 ),
                 "parameters": {"type": "object", "properties": {}},
             },
@@ -145,7 +146,9 @@ _GEMINI_TOOLS = [
                 ),
                 "parameters": {
                     "type": "object",
-                    "properties": {"manifest_id": {"type": "string", "description": "The C2PA manifest URN"}},
+                    "properties": {
+                        "manifest_id": {"type": "string", "description": "The C2PA manifest URN"}
+                    },
                     "required": ["manifest_id"],
                 },
             },
@@ -156,7 +159,9 @@ _GEMINI_TOOLS = [
                 ),
                 "parameters": {
                     "type": "object",
-                    "properties": {"manifest_id": {"type": "string", "description": "The C2PA manifest URN"}},
+                    "properties": {
+                        "manifest_id": {"type": "string", "description": "The C2PA manifest URN"}
+                    },
                     "required": ["manifest_id"],
                 },
             },
@@ -222,10 +227,10 @@ class _AgentLimiter:
 
 
 def _build_limiter() -> _AgentLimiter:
-    # global_per_day caps RUNS; each run makes up to VERIDEX_AGENT_MAX_TURNS model calls, so the true
-    # model-call ceiling is global_per_day * max_turns. Behind Render's proxy the per-IP cap is
-    # coarse (the client IP comes from a spoofable X-Forwarded-For), so global_per_day is the hard
-    # spend ceiling and is kept conservative.
+    # global_per_day caps RUNS; each run makes up to VERIDEX_AGENT_MAX_TURNS model calls, so
+    # the true model-call ceiling is global_per_day * max_turns. Behind Render's proxy the
+    # per-IP cap is coarse (the client IP comes from a spoofable X-Forwarded-For), so
+    # global_per_day is the hard spend ceiling and is kept conservative.
     return _AgentLimiter(
         per_ip_per_day=int(os.environ.get("VERIDEX_AGENT_PER_IP_DAY", "10")),
         global_per_day=int(os.environ.get("VERIDEX_AGENT_GLOBAL_DAY", "100")),
@@ -468,7 +473,8 @@ async def demo_agent(request: Request) -> AgentResponse:
                 return await _run_gemini_agent(gemini_key, sbr_client, question)
 
             from anthropic import AsyncAnthropic
-            anthropic_client = AsyncAnthropic(timeout=httpx.Timeout(45.0, connect=5.0))
+
+            anthropic_client = AsyncAnthropic(timeout=45.0)
             try:
                 return await _run_agent(anthropic_client, sbr_client, question)
             finally:
@@ -568,7 +574,9 @@ async def _run_gemini_agent(
             resp = await http_c.post(url, json=payload)
             if resp.status_code != 200:
                 logger.warning("Gemini API error %s: %s", resp.status_code, resp.text)
-                return _fell_back_response("the agent model is temporarily busy; please try again shortly")
+                return _fell_back_response(
+                    "the agent model is temporarily busy; please try again shortly"
+                )
 
             data = resp.json()
             candidates = data.get("candidates") or []
@@ -594,12 +602,14 @@ async def _run_gemini_agent(
                 fn_args = fn.get("args") or {}
                 tool_result = await _execute_tool(fn_name, fn_args, sbr_client)
                 trace.append(AgentToolCall(tool=fn_name, input=fn_args, result=tool_result))
-                resp_parts.append({
-                    "functionResponse": {
-                        "name": fn_name,
-                        "response": {"result": tool_result},
+                resp_parts.append(
+                    {
+                        "functionResponse": {
+                            "name": fn_name,
+                            "response": {"result": tool_result},
+                        }
                     }
-                })
+                )
 
             contents.append({"role": "user", "parts": resp_parts})
 

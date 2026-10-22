@@ -181,7 +181,7 @@ async def test_query_transparency_log_proof_is_independently_verifiable(sbr: Sbr
         result = await client.call_tool("query_transparency_log", {"manifest_id": "urn:c2pa:mcp5"})
     proof_response = result.data["inclusion_proof"]
     proof = MerkleProof.deserialize(proof_response["proof"])
-    _resolve_fn = getattr(proof, "compute_root", None) or getattr(proof, "resolve")
+    _resolve_fn = getattr(proof, "compute_root", None) or proof.resolve
     assert _resolve_fn() == bytes.fromhex(proof_response["checkpoint"]["rootHash"])
 
 

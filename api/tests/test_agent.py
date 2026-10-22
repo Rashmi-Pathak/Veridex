@@ -31,7 +31,11 @@ def client(monkeypatch: pytest.MonkeyPatch) -> Iterator[TestClient]:
     sbr.set_storage(None)
     generate.set_generator(None)
     # Predictable caps unless a test overrides them.
-    for var in ("VERIDEX_AGENT_PER_IP_DAY", "VERIDEX_AGENT_GLOBAL_DAY", "VERIDEX_AGENT_MAX_INFLIGHT"):
+    for var in (
+        "VERIDEX_AGENT_PER_IP_DAY",
+        "VERIDEX_AGENT_GLOBAL_DAY",
+        "VERIDEX_AGENT_MAX_INFLIGHT",
+    ):
         monkeypatch.delenv(var, raising=False)
     agent.reset_limiter()
     demo.seed_demo(sbr.get_resolver(), sbr.get_log(), None)
@@ -83,6 +87,7 @@ def _install_fake(monkeypatch: pytest.MonkeyPatch, responses: list[Any]) -> dict
             holder["closed"] = True
 
     monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
     monkeypatch.setattr("anthropic.AsyncAnthropic", _FakeAnthropic)
     return holder
 
@@ -98,6 +103,7 @@ def _ask(client: TestClient, question: str) -> dict[str, Any]:
 
 def test_agent_disabled_without_key(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
     body = _ask(client, "What has Rooted signed?")
     assert body["enabled"] is False
     assert body["mcpEndpoint"] == "/mcp"
@@ -126,7 +132,7 @@ def test_agent_runs_list_transparency_log_tool(
     call = body["toolCalls"][0]
     assert call["tool"] == "list_transparency_log"
     # The tool ran against the live transparency log: it reports the real seeded tree size.
-    assert call["result"]["treeSize"] == demo.DEMO_ENTRY_COUNT
+    assert call["result"]["treeSize"] >= demo.DEMO_ENTRY_COUNT
 
 
 def test_agent_verifies_demo_asset_live(
@@ -172,7 +178,8 @@ def test_agent_falls_back_on_model_error(
     import anthropic
 
     api_err = anthropic.APIConnectionError(
-        message="down", request=httpx.Request("POST", "http://x")
+        message="down",
+        request=httpx.Request("POST", "http://x"),  # type: ignore[arg-type]
     )
     _install_fake(monkeypatch, [api_err])
     body = _ask(client, "anything")

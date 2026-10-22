@@ -21,12 +21,8 @@ import os
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
-from dotenv import find_dotenv, load_dotenv
-
-# Load .env variables (such as VERIDEX_DEMO_SEED=1, DATABASE_URL, etc.)
-load_dotenv(find_dotenv(usecwd=True))
-
 import httpx
+from dotenv import find_dotenv, load_dotenv
 from fastapi import FastAPI
 from fastmcp.utilities.lifespan import combine_lifespans
 from httpx import ASGITransport
@@ -57,6 +53,9 @@ from veridex_api.tamper import router as tamper_router
 from veridex_api.transcript import router as transcript_router
 from veridex_mcp import server as mcp_server
 
+# Load .env variables (such as VERIDEX_DEMO_SEED=1, DATABASE_URL, etc.)
+load_dotenv(find_dotenv(usecwd=True))
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
@@ -66,8 +65,9 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     get_audio_resolver()
     get_video_resolver()
     get_log()
-    # Seed the credential-free demo assets when asked (VERIDEX_DEMO_SEED=1), so a live deploy with no
-    # provider key still shows a real VERIFIED recovery. The image, audio, and video assets use
+    # Seed the credential-free demo assets when asked (VERIDEX_DEMO_SEED=1), so a live deploy
+    # with no provider key still shows a real VERIFIED recovery. The image, audio, and video assets
+    # separate resolvers (no cross-modal matches) but share the transparency log + B2. Idempotent.
     # separate resolvers (no cross-modal matches) but share the transparency log + B2. Idempotent.
     if os.environ.get("VERIDEX_DEMO_SEED") == "1":
         seed_demo(get_resolver(), get_log(), get_storage())

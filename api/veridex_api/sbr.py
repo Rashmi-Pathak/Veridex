@@ -230,8 +230,9 @@ def set_resolver(resolver: Resolver | None) -> None:
 
 
 # A separate resolver for AUDIO so an audio fingerprint can never cross-match an image one: each
-# modality keeps its own index. The audio "image" is a spectrogram (see veridex_provenance.audio), so
-# the same Resolver/PDQ/Hamming machinery recovers audio with no new matcher. Built lazily.
+# modality keeps its own index. The audio "image" is a spectrogram (see
+# veridex_provenance.audio), so the same Resolver/PDQ/Hamming machinery recovers audio with no
+# new matcher. Built lazily.
 _audio_resolver: Resolver | None = None
 _audio_resolver_lock = threading.Lock()
 
@@ -598,8 +599,8 @@ async def ingest(
         ),
     ),
 ) -> ManifestCreateResult:
-    """Trusted generation-side ingest, gated by VERIDEX_INGEST_KEY (the X-Ingest-Key header; required
-    in production). The public query surface is /matches/*.
+    """Trusted generation-side ingest, gated by VERIDEX_INGEST_KEY (the X-Ingest-Key
+    header; required in production). The public query surface is /matches/*.
 
     The asset hash is computed from the uploaded bytes, never taken from the client. An existing
     manifest id is not overwritten (409), and a watermark id already bound to a manifest cannot be
@@ -609,7 +610,11 @@ async def ingest(
     the receipt (its real inclusion proof) is returned inline; otherwise the response is just the
     manifest id, unchanged.
     """
-    auth_key = x_ingest_key or request.headers.get("X-Veridex-Ingest-Key") or request.headers.get("x-veridex-ingest-key")
+    auth_key = (
+        x_ingest_key
+        or request.headers.get("X-Veridex-Ingest-Key")
+        or request.headers.get("x-veridex-ingest-key")
+    )
     _check_ingest_auth(auth_key)
     _validate_id(manifest_id, "manifest_id")
     _validate_id(watermark_id, "watermark_id")
@@ -904,9 +909,9 @@ async def demo_federation() -> FederationStatus:
 
 
 def _self_base_url(request: Request) -> str:
-    """Rooted's public base URL, for the receipt repository + anchor URIs. Prefers VERIDEX_PUBLIC_URL
-    (set it behind a proxy so the URIs name the public host), else the incoming request's base URL.
-    No literal domain is hardcoded."""
+    """Veridex public base URL, for the receipt repository + anchor URIs. Prefers
+    VERIDEX_PUBLIC_URL (set it behind a proxy so the URIs name the public host), else
+    the incoming request's base URL. No literal domain is hardcoded."""
     configured = os.environ.get("VERIDEX_PUBLIC_URL")
     if configured:
         return configured.rstrip("/")
@@ -1015,7 +1020,7 @@ def _proof_matches(
         if checkpoint.root_hash != inclusion.root_hash:
             return False, "checkpoint root does not match the current signed root"
         _deserialized = MerkleProof.deserialize(supplied.get("proof"))
-        _resolve_fn = getattr(_deserialized, "compute_root", None) or getattr(_deserialized, "resolve")
+        _resolve_fn = getattr(_deserialized, "compute_root", None) or _deserialized.resolve
         resolved = _resolve_fn()
         if resolved != bytes.fromhex(inclusion.root_hash):
             return False, "merkle audit path does not resolve to the signed root"

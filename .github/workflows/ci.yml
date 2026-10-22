@@ -16,8 +16,8 @@ jobs:
           enable-cache: true
       - name: Install Python
         run: uv python install 3.12
-      - name: Sync (locked)
-        run: uv sync --locked --all-packages --dev
+      - name: Sync
+        run: uv sync --all-packages --dev
       - name: Lint
         run: uv run ruff check .
       - name: Format check

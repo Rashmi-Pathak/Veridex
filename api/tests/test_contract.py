@@ -41,12 +41,12 @@ schema = (
 )
 
 
-_CHECKS = (
+_CHECKS = [
     schemathesis.checks.not_a_server_error,
     schemathesis.checks.status_code_conformance,
     schemathesis.checks.content_type_conformance,
     schemathesis.checks.response_schema_conformance,
-)
+]
 
 
 @schema.parametrize()

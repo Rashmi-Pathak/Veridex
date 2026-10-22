@@ -11,6 +11,7 @@ from typing import Any
 
 import numpy as np
 import numpy.typing as npt
+
 try:
     import pdqhash
 except ImportError:

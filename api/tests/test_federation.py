@@ -1,8 +1,8 @@
 """Federated SBR: on a local miss, forward the {alg, value} soft-binding query to peer resolvers and
 return the first peer's recovered manifest, labeled with the recovering peer. The forward target is
-an operator allowlist (VERIDEX_SBR_PEERS), never request-supplied, and is SSRF-guarded in production.
-Network-free: the peer HTTP client is a MockTransport injected via the _peer_client seam, so the
-global httpx (which the app's own clients use) is never patched."""
+an operator allowlist (VERIDEX_SBR_PEERS), never request-supplied, and is SSRF-guarded in
+production. Network-free: the peer HTTP client is a MockTransport injected via the _peer_client
+seam, so the global httpx (which the app's own clients use) is never patched."""
 
 from __future__ import annotations
 

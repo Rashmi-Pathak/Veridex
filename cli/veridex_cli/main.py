@@ -1,7 +1,8 @@
 """Veridex SBR CLI: recover C2PA provenance for stripped media from your terminal.
 
-Wraps the public Veridex Soft Binding Resolution API (the same spec endpoints the web client and the
-MCP server use). Defaults to the live deploy; override with --api-url or the VERIDEX_API_URL env var.
+Wraps the public Veridex Soft Binding Resolution API (the same spec endpoints the web client
+and the MCP server use). Defaults to the live deploy; override with --api-url or the
+VERIDEX_API_URL env var.
 
     pip install ./cli
     veridex recover stripped.jpg

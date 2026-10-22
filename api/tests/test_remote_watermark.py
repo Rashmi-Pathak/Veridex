@@ -42,7 +42,9 @@ def test_decode_sends_token_and_multipart_and_maps_the_response() -> None:
 
     def handler(request: httpx.Request) -> httpx.Response:
         seen["path"] = request.url.path
-        seen["token"] = request.headers.get("X-Veridex-Token") or request.headers.get("X-Rooted-Token")
+        seen["token"] = request.headers.get("X-Veridex-Token") or request.headers.get(
+            "X-Rooted-Token"
+        )
         seen["ctype"] = request.headers.get("Content-Type", "")
         seen["body"] = request.content
         return httpx.Response(200, json={"decodedId": "DEMO", "confidence": 1.0})

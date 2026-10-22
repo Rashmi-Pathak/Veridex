@@ -75,7 +75,7 @@ async def test_get_verified_receipt_is_conformant_and_really_verified() -> None:
     assert body["verified"] is True
     assert "error" not in body  # omitted when verified
     merkle = MerkleProof.deserialize(proof["proof"])
-    _resolve_fn = getattr(merkle, "compute_root", None) or getattr(merkle, "resolve")
+    _resolve_fn = getattr(merkle, "compute_root", None) or merkle.resolve
     assert _resolve_fn() == bytes.fromhex(proof["checkpoint"]["rootHash"])
     assert proof["rootHash"] == proof["checkpoint"]["rootHash"]
 

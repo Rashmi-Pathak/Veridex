@@ -5,10 +5,10 @@ credentials from .env; creating a key requires the parent key to have writeKeys.
 The capability list is evidence-based: each capability below maps to a b2sdk call the runtime code
 actually makes (file references in CAPABILITIES). Everything else is excluded, with the reason.
 
-Restriction is BY BUCKET ONLY, never by namePrefix: the S3-compatible presigned PUT (veridex_api.byo)
-is signed with this same key and needs writeFiles on byo/, while the demo seed and the live
-generation write under assets/, manifests/, and signatures/; a key-level namePrefix would break one
-prefix or the other, so the byo/ key shape is enforced server-side instead (byo.py's anchored
+Restriction is BY BUCKET ONLY, never by namePrefix: the S3-compatible presigned PUT
+(veridex_api.byo) is signed with this same key and needs writeFiles on byo/, while the demo seed
+and the live generation write under assets/, manifests/, and signatures/; a key-level namePrefix
+would break one prefix or the other, so the byo/ key shape is enforced server-side instead
 regex).
 
 Safety: dry-run by default (prints the exact key request, the evidence per capability, and the

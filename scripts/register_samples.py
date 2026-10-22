@@ -7,15 +7,14 @@ Creates:
 4. Ingests all 15 into Veridex's PostgreSQL registry & Merkle transparency log.
 """
 
-import hashlib
-import io
 import math
 import os
 from pathlib import Path
+
 from dotenv import find_dotenv, load_dotenv
+import httpx
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
-import httpx
 
 load_dotenv(find_dotenv(usecwd=True))
 
@@ -33,7 +32,13 @@ SAMPLES_DEF = [
     ("veridex-sample-11", "Golden Ratio Spiral", "imagen-3", (45, 30, 10), (255, 215, 0)),
     ("veridex-sample-12", "Obsidian Core", "dall-e-3", (15, 15, 20), (140, 140, 160)),
     ("veridex-sample-13", "Bioluminescent Reef", "flux-1-schnell", (5, 20, 40), (0, 255, 230)),
-    ("veridex-sample-14", "Retro Synthwave Sunset", "stable-diffusion-3.5", (35, 5, 50), (255, 90, 50)),
+    (
+        "veridex-sample-14",
+        "Retro Synthwave Sunset",
+        "stable-diffusion-3.5",
+        (35, 5, 50),
+        (255, 90, 50),
+    ),
     ("veridex-sample-15", "Deep Space Pulsar", "gemini-2.5-flash", (5, 5, 25), (180, 200, 255)),
 ]
 
@@ -73,7 +78,10 @@ def generate_artistic_image(seed_idx: int, title: str, c1: tuple, c2: tuple) -> 
             rng.integers(100, 255),
         )
         points = [
-            (x + int(rad * math.cos(2 * math.pi * k / 6)), y + int(rad * math.sin(2 * math.pi * k / 6)))
+            (
+                x + int(rad * math.cos(2 * math.pi * k / 6)),
+                y + int(rad * math.sin(2 * math.pi * k / 6)),
+            )
             for k in range(6)
         ]
         draw.polygon(points, outline=poly_color, width=2)
@@ -131,7 +139,9 @@ def main():
                 "returnReceipt": "true",
             }
 
-            resp = client.post("http://localhost:8000/ingest", headers=headers, data=form, files=files)
+            resp = client.post(
+                "http://localhost:8000/ingest", headers=headers, data=form, files=files
+            )
             if resp.status_code in (200, 201):
                 status_str = "INGESTED OK"
             elif resp.status_code == 409:
@@ -150,10 +160,13 @@ def main():
             recovered = top_match.get("manifestId") == manifest_id if top_match else False
 
             results.append((sample_id, title, model, status_str, recovered, score))
-            print(f"[{idx:02d}/{len(SAMPLES_DEF)}] {title} -> Ingest: {status_str} | Stripped Match: {recovered} (Score: {score}/100)")
+            print(
+                f"[{idx:02d}/{len(SAMPLES_DEF)}] {title} -> Ingest: {status_str} | "
+                f"Stripped Match: {recovered} (Score: {score}/100)"
+            )
 
     print("\n=== SUMMARY OF REGISTERED SAMPLES ===")
-    for sid, title, model, status_str, rec, score in results:
+    for sid, title, model, _status_str, rec, score in results:
         status_icon = "[OK]" if rec else "[FAIL]"
         print(f" {status_icon} {sid}: {title} [{model}] - Match score: {score}/100")
 

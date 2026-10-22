@@ -90,7 +90,7 @@ async def test_inclusion_proof_is_independently_verifiable() -> None:
     pub = load_public_key(bytes.fromhex(body["publicKeyHex"]))
     assert verify_checkpoint(cp, pub) is True
     proof = MerkleProof.deserialize(body["proof"])
-    _resolve_fn = getattr(proof, "compute_root", None) or getattr(proof, "resolve")
+    _resolve_fn = getattr(proof, "compute_root", None) or proof.resolve
     assert _resolve_fn() == bytes.fromhex(cp.root_hash)
     assert body["rootHash"] == cp.root_hash
 
@@ -104,7 +104,7 @@ async def test_inclusion_proof_does_not_resolve_to_a_wrong_root() -> None:
         await _ingest(c, "urn:c2pa:tlog3", "RT03", 13)
         body = (await c.get("/transparency/proof/urn:c2pa:tlog3")).json()
     proof = MerkleProof.deserialize(body["proof"])
-    _resolve_fn = getattr(proof, "compute_root", None) or getattr(proof, "resolve")
+    _resolve_fn = getattr(proof, "compute_root", None) or proof.resolve
     assert _resolve_fn() != b"\x00" * 32
 
 
