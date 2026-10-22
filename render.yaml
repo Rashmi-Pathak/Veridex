@@ -1,0 +1,87 @@
+# Render Blueprint for the Veridex SBR API. The front end deploys to Vercel.
+# The demo runs in-memory by default (no Postgres/Redis/provider keys needed): the seeded demo asset
+# makes the live site show a real VERIFIED recovery. Set the B2 env (below) in the dashboard to also
+# store each asset/manifest/signature on Backblaze B2 and light up the /demo/storage panel.
+#
+# Native Python runtime + uv (NOT Docker): this provides the deploy path for Veridex API.
+# There is no Dockerfile; the native runtime is used on Render.
+services:
+  - type: web
+    name: veridex-api
+    runtime: python
+    plan: starter # paid, always-on, so judges never hit a cold start
+    region: virginia
+    branch: main
+    autoDeploy: true
+    healthCheckPath: /health
+    buildCommand: pip install uv && uv sync --locked --package veridex-api --no-dev
+    startCommand: .venv/bin/uvicorn veridex_api.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: VERIDEX_DEMO_SEED
+        value: "1"
+      - key: PYTHON_VERSION
+        value: "3.12.7"
+      # Fail the public write endpoint (POST /ingest) CLOSED on this judge-facing deploy: without a
+      # configured VERIDEX_INGEST_KEY it returns 503 rather than accepting an unauthenticated write
+      # into the persistent recovery index and the WORM-anchored transparency log. The demo never
+      # uses the HTTP /ingest route (seed, /demo/generate, BYO, and the B2 webhook all call the
+      # ingest core in-process), so closing it changes nothing a judge sees. Set VERIDEX_INGEST_KEY
+      # in the dashboard only if an authenticated external ingest client is ever needed.
+      - key: VERIDEX_REQUIRE_INGEST_KEY
+        value: "1"
+      # Live recovery index. With DATABASE_URL set to the Render Postgres (rooted-db, pgvector 0.7+),
+      # the resolver runs on Postgres with an HNSW bit_hamming_ops index over the PDQ bit(256) column;
+      # unset, it uses the in-memory index. sync:false -> paste rooted-db's Internal Database URL in
+      # the dashboard (the secret stays in Render, never in the repo).
+      - key: DATABASE_URL
+        sync: false
+      # Backblaze B2 object store. sync:false keeps the values out of the repo; set them in the
+      # Render dashboard. With all three present the demo writes asset/manifest/signature to B2.
+      - key: B2_KEY_ID
+        sync: false
+      - key: B2_APP_KEY
+        sync: false
+      - key: B2_BUCKET_DEV
+        sync: false
+      # Stable checkpoint signing key (raw Ed25519 key as hex). sync:false -> set it in the dashboard.
+      # With it set, key_source is "configured" and the public key + every inclusion proof stay valid
+      # across redeploys; without it each restart generates an ephemeral key and invalidates old
+      # proofs. Required for a stable transparency log through the judging window.
+      - key: ED25519_PRIVATE_KEY_HEX
+        sync: false
+      # Live generation (POST /demo/generate): a visitor generates a real image on their own prompt,
+      # which Rooted signs, stores on B2, indexes, and logs, then they strip and recover it. The
+      # endpoint is hard-capped (per-IP/day, global/day, in-flight) and falls back to the seeded
+      # asset on a provider error or when the budget is spent, so it never over-spends or breaks the
+      # loop. VERIDEX_LIVE_GENERATE=1 turns it on; until GMI_CLOUD_API_KEY (sync:false) is set it
+      # honestly serves the seeded asset. Cost: GMI only (no OPENAI_API_KEY here, so one paid
+      # provider call per attempt) at ~$0.035/gen; the global cap counts every attempt, so 50/day is
+      # a hard ceiling of roughly $1.75/day.
+      - key: VERIDEX_LIVE_GENERATE
+        value: "1"
+      - key: VERIDEX_GMI_MODEL
+        value: "seedream-5.0-lite"
+      - key: GMI_CLOUD_API_KEY
+        sync: false
+      - key: VERIDEX_GEN_PER_IP_DAY
+        value: "5"
+      - key: VERIDEX_GEN_GLOBAL_DAY
+        value: "50"
+      # Rooted's MCP server is mounted in-process at /mcp (no env needed, always on): a judge can
+      # connect their own agent to https://veridex-api-ubvc.onrender.com/mcp and call verify_asset,
+      # recover_manifest, and query_transparency_log over the same vendor-neutral API.
+      #
+      # Live provenance agent (POST /demo/agent): a Claude tool-use loop that audits provenance over
+      # Rooted's live tools and returns its real tool-call trace. Opt-in and hard-capped (per-IP/day,
+      # global/day no-refund ceiling, in-flight, turn cap, small max_tokens). It is OFF until
+      # ANTHROPIC_API_KEY (sync:false) is set in the dashboard; until then it serves an honest
+      # disabled response that still points at the reachable /mcp endpoint. Cost: claude-opus-4-8 at
+      # capped tokens; the global cap counts every run, so 50/day is a hard daily ceiling.
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: VERIDEX_AGENT_MODEL
+        value: "claude-opus-4-8"
+      - key: VERIDEX_AGENT_PER_IP_DAY
+        value: "5"
+      - key: VERIDEX_AGENT_GLOBAL_DAY
+        value: "50"
